@@ -1,0 +1,5 @@
+env.sh
+*.o
+*.out
+include/cpp-driver/build/
+certs/
