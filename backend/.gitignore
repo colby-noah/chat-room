@@ -1,8 +1,10 @@
 *.out
-*.sh
+server.o
+misc/*
+env.sh
+.env*
+!.env.example
+certs/
 *.pem
 *.key
 *.crt
-misc/*
-server.o
-.env*
