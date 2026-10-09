@@ -22,7 +22,7 @@ RUN git clone --depth 1 https://github.com/scylladb/cpp-driver /tmp/cpp-driver \
 # vcpkg libraries (jwt-cpp, nlohmann-json, uWebSockets, uSockets)
 RUN git clone --depth 1 https://github.com/microsoft/vcpkg /opt/vcpkg \
  && /opt/vcpkg/bootstrap-vcpkg.sh -disableMetrics \
- && /opt/vcpkg/vcpkg install jwt-cpp nlohmann-json uwebsockets usockets
+ && /opt/vcpkg/vcpkg install jwt-cpp nlohmann-json uwebsockets "usockets[ssl]"
 
 # Build the server, overriding the Makefile's laptop-specific paths
 WORKDIR /app
