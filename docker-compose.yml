@@ -1,0 +1,54 @@
+services:
+  scylla:
+    image: scylladb/scylla
+    command: --smp 1 --overprovisioned 1
+    volumes:
+      - scylla-data:/var/lib/scylla
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  schema:
+    image: scylladb/scylla
+    entrypoint: ["cqlsh", "scylla", "-f", "/schema.cql"]
+    volumes:
+      - ./backend/database/chat_schema.cql:/schema.cql:ro
+    depends_on:
+      scylla:
+        condition: service_healthy
+    restart: "no"
+
+  backend:
+    build: ./backend
+    init: true
+    environment:
+      REST_PORT: 8080
+      WEBSOCKET_PORT: 8081
+      DATABASE_IP: scylla
+      JWT_SECRET: ${JWT_SECRET:?copy .env.example to .env and set JWT_SECRET}
+      SSL_CERT_PATH: /certs/chat.crt
+      SSL_KEY_PATH: /certs/chat.key
+      SSL_KEY_PASSWORD: ""
+    volumes:
+      - ./certs:/certs:ro
+    depends_on:
+      schema:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+
+volumes:
+  scylla-data:
