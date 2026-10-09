@@ -28,6 +28,7 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useUserStore } from '@/store/user'
+    import { REST_URL } from '@/config'
 
     const router = useRouter()
     const userStore = useUserStore()
@@ -48,7 +49,7 @@
 
         try {
             const response = await axios.patch(
-            `${import.meta.env.VITE_REST_URL}/rooms/remove-user`, 
+            `${REST_URL}/rooms/remove-user`, 
                 { 
                     room_id: userStore.current_room.room_id,
                     user_id: selected_user.value.user_id,
@@ -87,7 +88,7 @@
     const getUsers = async () => {
         try {
                 const response = 
-                await axios.get(`${import.meta.env.VITE_REST_URL}/rooms/users/${userStore.current_room.room_id}`)
+                await axios.get(`${REST_URL}/rooms/users/${userStore.current_room.room_id}`)
 
                 if (response.status == 200 && response.data.users_info) {
                     users.value = response.data.users_info

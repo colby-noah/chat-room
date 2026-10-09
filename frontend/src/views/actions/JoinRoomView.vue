@@ -21,6 +21,7 @@
     import { ref } from 'vue'
     import axios from 'axios'
     import { useRouter } from 'vue-router'
+    import { REST_URL } from '@/config'
 
     const router = useRouter()
     
@@ -34,7 +35,7 @@
         result.value = { message: '', is_error: false }
 
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_REST_URL}/rooms/add-user`, 
+            const response = await axios.patch(`${REST_URL}/rooms/add-user`, 
                 { room_id: room_id.value },
                 {
                     headers: { 

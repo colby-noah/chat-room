@@ -25,6 +25,7 @@
     import { fetchUserData } from '@/auth'
     import { useUserStore } from '@/store/user'
     import axios from 'axios'
+    import { REST_URL } from '@/config'
 
     const router = useRouter()
     const userStore = useUserStore()
@@ -34,7 +35,7 @@
 
     const getRoom = async (room_id) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_REST_URL}/rooms/${room_id}`, {
+            const response = await axios.get(`${REST_URL}/rooms/${room_id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }

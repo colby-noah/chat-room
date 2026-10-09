@@ -15,6 +15,7 @@
     import { ref, onMounted } from 'vue'
     import { useUserStore } from '@/store/user'
     import axios from 'axios'
+    import { REST_URL } from '@/config'
 
     const userStore = useUserStore()
     const content = ref('')
@@ -33,7 +34,7 @@
         if (content.value) {
             try {
                 const response = await axios.post(
-                    `${import.meta.env.VITE_REST_URL}/messages`,
+                    `${REST_URL}/messages`,
                     {
                         content: content.value,
                         room_id: userStore.current_room.room_id,

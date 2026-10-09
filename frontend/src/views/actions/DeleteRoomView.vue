@@ -16,6 +16,7 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useUserStore } from '@/store/user'
+    import { REST_URL } from '@/config'
 
     const router = useRouter()
     const userStore = useUserStore()
@@ -30,7 +31,7 @@
 
         try {
             const response = await axios.delete(
-            `${import.meta.env.VITE_REST_URL}/rooms/${userStore.current_room.room_id}`, 
+            `${REST_URL}/rooms/${userStore.current_room.room_id}`, 
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`

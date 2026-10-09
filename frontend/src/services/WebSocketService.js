@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { WEBSOCKET_URL } from '@/config'
 
 class WebSocketService {
     constructor() {
@@ -12,7 +13,7 @@ class WebSocketService {
             this.closeConnection()
         }
 
-        this.socket = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
+        this.socket = new WebSocket(WEBSOCKET_URL)
 
         this.socket.onopen = () => {
             //console.log('Connected to websocket server')

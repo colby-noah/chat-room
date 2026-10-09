@@ -27,6 +27,7 @@
     import { useRouter } from 'vue-router'
     import { isAuthenticated, fetchUserData } from '@/auth'
     import { useUserStore } from '@/store/user'
+    import { REST_URL } from '@/config'
 
     import OwnerActions from '@/components/OwnerActions.vue'
     import AdminActions from '@/components/AdminActions.vue'
@@ -43,7 +44,7 @@
         //Get privilege level
         try {
             const response = 
-            await axios.get(`${import.meta.env.VITE_REST_URL}/rooms/privilege/${userStore.current_room.room_id}`, {
+            await axios.get(`${REST_URL}/rooms/privilege/${userStore.current_room.room_id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
