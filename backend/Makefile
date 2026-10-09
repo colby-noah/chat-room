@@ -1,6 +1,6 @@
 # Compiler flags
 CC=g++
-CFLAGS=-Wall -Wextra -DWITH_OPENSSL=1
+CFLAGS=-Wall -Wextra -std=c++17 -DWITH_OPENSSL=1
 
 # VCPKG for jwt-cpp
 VCPKG_DIR=/home/colby/.vcpkg/installed/x64-linux
