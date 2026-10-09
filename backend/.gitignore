@@ -1,5 +1,5 @@
 *.out
-server.o
+*.o
 misc/*
 env.sh
 .env*
