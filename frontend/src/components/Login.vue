@@ -44,6 +44,7 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { login } from '@/auth'
+    import { REST_URL } from '@/config'
     
     const router = useRouter()
 
@@ -110,8 +111,8 @@
 
         try {
             const response = isLogin.value
-                ? await axios.post(`${import.meta.env.VITE_REST_URL}/login`, form_data.value)
-                : await axios.post(`${import.meta.env.VITE_REST_URL}/users`, form_data.value)
+                ? await axios.post(`${REST_URL}/login`, form_data.value)
+                : await axios.post(`${REST_URL}/users`, form_data.value)
 
             if (response.status == 200 || response.status == 204) {
                 result.value = {

@@ -27,6 +27,7 @@
     import WebSocketService from '@/services/WebSocketService'
     import { useUserStore } from '@/store/user'
     import TypingBar from './TypingBar.vue'
+    import { REST_URL } from '@/config'
 
     const userStore = useUserStore()
     const websocket = new WebSocketService()
@@ -78,8 +79,8 @@
             const limit = 20
 
             const url = before
-            ? `${import.meta.env.VITE_REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}&before=${before}`
-            : `${import.meta.env.VITE_REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}`
+            ? `${REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}&before=${before}`
+            : `${REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}`
 
             const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }

@@ -21,6 +21,7 @@
     import { ref } from 'vue'
     import axios from 'axios'
     import { useRouter } from 'vue-router'
+    import { REST_URL } from '@/config'
 
     const router = useRouter()
     
@@ -40,7 +41,7 @@
         result.value = { message: '', is_error: false }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_REST_URL}/rooms`, 
+            const response = await axios.post(`${REST_URL}/rooms`, 
                 { name: room_name.value },
                 {
                     headers: { 
