@@ -1,10 +1,10 @@
 # Chat Room
 
-A real-time, multi-room chat app. Users sign up, create rooms, invite others, and talk live over WebSockets with owner/admin roles controlling who can manage each room. The whole stack starts with one command.
+A real-time, multi-room chat app. Users sign up, create rooms, invite others, and talk live over WebSockets, with owner/admin roles controlling who can manage each room. The whole stack starts with one command.
 
 ![Two users chatting in real time](docs/images/demo.gif)
 
-Built with a **C++ backend**, a **Vue.js frontend**, and **ScyllaDB**, behind an **Nginx** reverse proxy that terminates TLS. Originally a project for Oregon State's CS 406, since reworked to run reproducibly with Docker Compose.
+Built with a **C++ backend**, a **Vue.js frontend**, and **ScyllaDB**. An **Nginx** reverse proxy sits in front, terminating and re-encrypting TLS. Originally a project for Oregon State's CS 406, since reworked to run reproducibly with Docker Compose.
 
 ## Features
 
@@ -31,10 +31,10 @@ Built with a **C++ backend**, a **Vue.js frontend**, and **ScyllaDB**, behind an
                  │  /ws/   → backend :8081       │
                  └──────────────┬────────────────┘
                                 │
-                      ┌─────────▼─────────┐        ┌───────────┐
-                      │ C++ backend       │ ─────► │ ScyllaDB  │
-                      │ REST + WebSocket  │        │ (CQL)     │
-                      └───────────────────┘        └───────────┘
+                   ┌────────────▼─────────────┐        ┌───────────┐
+                   │ C++ backend              │ ─────► │ ScyllaDB  │
+                   │ REST (httplib) + WS (uWS)│        │ (CQL)     │
+                   └──────────────────────────┘        └───────────┘
 ```
 
 | Service | What it does |
@@ -80,13 +80,14 @@ After rebuilding the backend, run `docker compose restart web` so Nginx re-resol
 | `REST_PORT`, `WEBSOCKET_PORT` | `docker-compose.yml` | Backend ports (8080 / 8081) |
 | `DATABASE_IP` | `docker-compose.yml` | Hostname of the ScyllaDB node |
 | `SSL_CERT_PATH`, `SSL_KEY_PATH` | `docker-compose.yml` | Certificate paths used by the backend |
+| `SSL_KEY_PASSWORD` | `docker-compose.yml` | Passphrase for the private key (empty for the generated cert) |
 
 Secrets, keys, and certificates are gitignored. `backend/env.example.sh` documents the variables for running the backend outside Docker.
 
 ## Design notes
 
 - **REST for writes, WebSockets for delivery.** Messages are sent with a normal authenticated `POST`; the server stores them and broadcasts to everyone connected to that room. A client opens a WebSocket and sends its JWT and a room ID. The server checks the token and room membership before subscribing it, so a user can't listen in on rooms they don't belong to.
-- **Same-origin API.** The frontend calls `/rest` and `/ws` on whatever host serves it, and Nginx routes them. There are no hard-coded backend URLs in the production build and no CORS to configure.
+- **Same-origin API.** In the Docker setup, the frontend calls `/rest` and `/ws` on whatever host serves it, and Nginx routes them. There are no hard-coded backend URLs in the production build, and no cross-origin requests.
 - **Schema as code.** Keyspace and tables live in `backend/database/chat_schema.cql` and are applied automatically by the `schema` service, so a fresh clone gets a working database.
 - **Reproducible builds.** Backend dependencies (libbcrypt, the ScyllaDB C++ driver, and vcpkg packages) are built inside a multi-stage Dockerfile, so nothing needs installing on the host.
 
