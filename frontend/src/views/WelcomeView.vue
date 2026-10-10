@@ -2,7 +2,6 @@
     <div class="parent">
         <h1 class='welcome'>Welcome</h1>
         <Login />
-        <img src="../assets/positivessl_trust_seal_md_167x42.png" style="margin-top: 40px;">
     </div>
 </template>
 
