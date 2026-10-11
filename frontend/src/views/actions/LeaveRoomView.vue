@@ -1,11 +1,11 @@
 <template>
   <div class="flex-col-centered">
-    <button @click="router.push('/room-options')" class="button-gray back">
+    <button class="button-gray back" @click="router.push('/room-options')">
       Back
     </button>
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Are you sure you want to leave?</h1>
-      <button @click="leaveRoom()" class="button-gray submit">Leave</button>
+      <button class="button-gray submit" @click="leaveRoom()">Leave</button>
       <p
         v-if="result.message"
         :class="{ error: result.is_error, success: !result.is_error }"

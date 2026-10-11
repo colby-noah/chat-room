@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="sendMessage" autocomplete="off" class="bar">
+    <form autocomplete="off" class="bar" @submit.prevent="sendMessage">
       <textarea
         id="content"
         v-model="content"

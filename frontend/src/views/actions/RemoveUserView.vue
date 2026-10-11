@@ -1,18 +1,18 @@
 <template>
   <div class="flex-col-centered">
-    <button @click="router.push('/room-options')" class="button-gray back">
+    <button class="button-gray back" @click="router.push('/room-options')">
       Back
     </button>
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Remove a User</h1>
-      <div class="users-container" v-if="users.length > 0">
+      <div v-if="users.length > 0" class="users-container">
         <ul class="user-list-ul">
           <li
             v-for="(user, index) in users"
             :key="index"
-            @click="selected_user = user"
             class="user-list-li"
             :class="{ selected: user === selected_user }"
+            @click="selected_user = user"
           >
             {{ user.username }}
           </li>
@@ -23,7 +23,7 @@
           Remove: {{ selected_user.username }}
         </p>
       </div>
-      <button @click="removeUser()" class="button-gray submit">Submit</button>
+      <button class="button-gray submit" @click="removeUser()">Submit</button>
       <p
         v-if="result.message"
         :class="{ error: result.is_error, success: !result.is_error }"

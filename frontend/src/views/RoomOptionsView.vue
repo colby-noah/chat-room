@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <nav style="display: flex; flex-direction: row-reverse">
-      <button @click="router.push('/home')" class="back button-gray">
+      <button class="back button-gray" @click="router.push('/home')">
         Back
       </button>
     </nav>

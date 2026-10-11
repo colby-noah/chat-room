@@ -1,14 +1,14 @@
 <template>
   <div class="flex-col-centered">
-    <button @click="router.push('/home')" class="button-gray back">Back</button>
+    <button class="button-gray back" @click="router.push('/home')">Back</button>
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Join a Room</h1>
-      <form @submit.prevent="handleSubmit" autocomplete="off">
+      <form autocomplete="off" @submit.prevent="handleSubmit">
         <label for="room_name">Room ID</label>
         <input
-          type="text"
           id="room_id"
           v-model="room_id"
+          type="text"
           placeholder="Enter the room ID"
         />
 

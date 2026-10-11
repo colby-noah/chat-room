@@ -1,12 +1,12 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <button @click="router.push('/promote-user')" class="button-gray action">
+    <button class="button-gray action" @click="router.push('/promote-user')">
       Promote User
     </button>
-    <button @click="router.push('/demote-admin')" class="button-gray action">
+    <button class="button-gray action" @click="router.push('/demote-admin')">
       Demote Admin
     </button>
-    <button @click="router.push('/delete-room')" class="button-gray action">
+    <button class="button-gray action" @click="router.push('/delete-room')">
       Delete Room
     </button>
   </div>

@@ -1,13 +1,13 @@
 <template>
   <div class="flex-col-centered">
-    <button @click="router.push('/room-options')" class="button-gray back">
+    <button class="button-gray back" @click="router.push('/room-options')">
       Back
     </button>
     <div class="action-container">
       <h1 style="color: var(--vue-green)">
         Are you sure you want to delete the room?
       </h1>
-      <button @click="deleteRoom()" class="button-gray submit">Delete</button>
+      <button class="button-gray submit" @click="deleteRoom()">Delete</button>
       <p
         v-if="result.message"
         :class="{ error: result.is_error, success: !result.is_error }"

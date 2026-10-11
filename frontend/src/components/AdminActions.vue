@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <button @click="router.push('/remove-user')" class="button-gray action">
+    <button class="button-gray action" @click="router.push('/remove-user')">
       Remove User
     </button>
   </div>

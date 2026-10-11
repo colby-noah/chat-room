@@ -1,18 +1,18 @@
 <template>
   <div class="flex-col-centered">
-    <button @click="router.push('/room-options')" class="button-gray back">
+    <button class="button-gray back" @click="router.push('/room-options')">
       Back
     </button>
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Demote Admin to User</h1>
-      <div class="users-container" v-if="admins.length > 0">
+      <div v-if="admins.length > 0" class="users-container">
         <ul class="user-list-ul">
           <li
             v-for="(admin, index) in admins"
             :key="index"
-            @click="selected_admin = admin"
             class="user-list-li"
             :class="{ selected: admin === selected_admin }"
+            @click="selected_admin = admin"
           >
             {{ admin.username }}
           </li>
@@ -23,7 +23,7 @@
           Demote: {{ selected_admin.username }}
         </p>
       </div>
-      <button @click="demoteAdmin()" class="button-gray submit">Submit</button>
+      <button class="button-gray submit" @click="demoteAdmin()">Submit</button>
       <p
         v-if="result.message"
         :class="{ error: result.is_error, success: !result.is_error }"

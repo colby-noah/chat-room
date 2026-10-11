@@ -6,17 +6,17 @@
         <div class="form-data">
           <label for="username">Username</label>
           <input
-            type="text"
             id="username"
             v-model="form_data.username"
+            type="text"
             placeholder="Enter your username"
           />
 
           <label for="password">Password</label>
           <input
-            type="password"
             id="password"
             v-model="form_data.password"
+            type="password"
             placeholder="Enter your password"
             @input="checkRequirements"
             @focus="show_password_requirements = !isLogin"
@@ -54,7 +54,7 @@
     </div>
 
     <p style="margin-top: auto">
-      <span @click="toggleForm" class="link">{{
+      <span class="link" @click="toggleForm">{{
         isLogin
           ? "Don't have an account? Sign Up"
           : "Already have an account? Login"

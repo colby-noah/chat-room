@@ -3,15 +3,15 @@
     <nav style="display: flex; flex-direction: row-reverse">
       <button
         v-if="isAuthenticated"
-        @click="handleLogout"
         class="button-gray logout"
+        @click="handleLogout"
       >
         Logout
       </button>
       <button
         v-if="userStore.current_room"
-        @click="router.push('room-options')"
         class="button-gray room-options"
+        @click="router.push('room-options')"
       >
         Room Options
       </button>

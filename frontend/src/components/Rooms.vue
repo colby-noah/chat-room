@@ -2,7 +2,7 @@
   <div class="rooms">
     <div class="header">
       <h1 style="color: white">Your rooms</h1>
-      <button @click="show_add_room = !show_add_room" class="add-room-button">
+      <button class="add-room-button" @click="show_add_room = !show_add_room">
         {{ show_add_room ? "X" : "+" }}
       </button>
     </div>
@@ -16,12 +16,12 @@
       <li
         v-for="room in rooms"
         :key="room.room_id"
-        @click="selectRoom(room)"
         :class="{
           selected:
             userStore.current_room &&
             room.room_id === userStore.current_room.room_id,
         }"
+        @click="selectRoom(room)"
       >
         {{ room.name }}
       </li>
