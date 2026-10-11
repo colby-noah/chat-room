@@ -1,32 +1,34 @@
 <template>
-  <div class="rooms">
-    <div class="header">
-      <h1 style="color: white">Your rooms</h1>
-      <button class="add-room-button" @click="showAddRoom = !showAddRoom">
-        {{ showAddRoom ? "X" : "+" }}
-      </button>
+    <div class="rooms">
+        <div class="header">
+            <h1 style="color: white">Your rooms</h1>
+            <button class="add-room-button" @click="showAddRoom = !showAddRoom">
+                {{ showAddRoom ? "X" : "+" }}
+            </button>
+        </div>
+        <div v-if="showAddRoom" class="popup-parent">
+            <router-link to="/create-room" class="room-link"
+                >Create a Room</router-link
+            >
+            <router-link to="/join-room" class="room-link"
+                >Join a Room</router-link
+            >
+        </div>
+        <ul v-else>
+            <li
+                v-for="room in rooms"
+                :key="room.room_id"
+                :class="{
+                    selected:
+                        userStore.currentRoom &&
+                        room.room_id === userStore.currentRoom.room_id,
+                }"
+                @click="selectRoom(room)"
+            >
+                {{ room.name }}
+            </li>
+        </ul>
     </div>
-    <div v-if="showAddRoom" class="popup-parent">
-      <router-link to="/create-room" class="room-link"
-        >Create a Room</router-link
-      >
-      <router-link to="/join-room" class="room-link">Join a Room</router-link>
-    </div>
-    <ul v-else>
-      <li
-        v-for="room in rooms"
-        :key="room.room_id"
-        :class="{
-          selected:
-            userStore.currentRoom &&
-            room.room_id === userStore.currentRoom.room_id,
-        }"
-        @click="selectRoom(room)"
-      >
-        {{ room.name }}
-      </li>
-    </ul>
-  </div>
 </template>
 
 <script setup>
@@ -43,142 +45,142 @@ const rooms = ref([]);
 const showAddRoom = ref(false);
 
 const getRoom = async (roomId) => {
-  try {
-    const response = await axios.get(`${REST_URL}/rooms/${roomId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+        const response = await axios.get(`${REST_URL}/rooms/${roomId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
 
-    if (response.status == 200 && response.data) {
-      const room = response.data;
-      room.room_id = roomId; // Query does not include room_id
-      rooms.value.push(room);
+        if (response.status == 200 && response.data) {
+            const room = response.data;
+            room.room_id = roomId; // Query does not include room_id
+            rooms.value.push(room);
 
-      rooms.value.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      });
+            rooms.value.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+        }
+    } catch (error) {
+        console.error("Failed to fetch room: ", error);
     }
-  } catch (error) {
-    console.error("Failed to fetch room: ", error);
-  }
 };
 
 const selectRoom = (room) => {
-  userStore.currentRoom = room;
+    userStore.currentRoom = room;
 };
 
 onMounted(async () => {
-  rooms.value = [];
+    rooms.value = [];
 
-  await fetchUserData();
+    await fetchUserData();
 
-  userStore.roomIds.forEach((roomId) => {
-    getRoom(roomId);
-  });
+    userStore.roomIds.forEach((roomId) => {
+        getRoom(roomId);
+    });
 });
 </script>
 
 <style scoped>
 .rooms {
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-  max-width: 18vw;
-  background-color: var(--foreground);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    max-width: 18vw;
+    background-color: var(--foreground);
 }
 
 .header {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 h1 {
-  padding-left: 20px;
-  margin: 0;
-  padding-bottom: 10px;
+    padding-left: 20px;
+    margin: 0;
+    padding-bottom: 10px;
 }
 
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  margin-bottom: 15px;
-  min-width: 18vw;
-  overflow-y: auto;
-  flex-grow: 1;
-  scrollbar-color: white var(--foreground);
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 15px;
+    min-width: 18vw;
+    overflow-y: auto;
+    flex-grow: 1;
+    scrollbar-color: white var(--foreground);
 }
 
 ul::-webkit-scrollbar-thumb {
-  background: white;
+    background: white;
 }
 
 ul::-webkit-scrollbar-track {
-  background: var(--foreground);
+    background: var(--foreground);
 }
 
 li {
-  padding-left: 20px;
-  padding-right: 20px;
-  color: white;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 14pt;
-  word-break: break-word;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14pt;
+    word-break: break-word;
 }
 
 li:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .selected {
-  color: var(--vue-green);
-  text-decoration: none;
-  cursor: default;
-  font-size: 18pt;
+    color: var(--vue-green);
+    text-decoration: none;
+    cursor: default;
+    font-size: 18pt;
 }
 
 .add-room-button {
-  font-size: 20pt;
-  color: white;
-  min-width: 70px;
-  margin: auto;
-  background-color: var(--foreground);
-  border: var(--vue-green) solid 3px;
-  text-align: center;
-  align-items: center;
-  text-decoration: none;
-  cursor: pointer;
+    font-size: 20pt;
+    color: white;
+    min-width: 70px;
+    margin: auto;
+    background-color: var(--foreground);
+    border: var(--vue-green) solid 3px;
+    text-align: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .add-room-button:hover {
-  color: var(--foreground);
-  background-color: var(--vue-green);
+    color: var(--foreground);
+    background-color: var(--vue-green);
 }
 
 .popup-parent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 18vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 18vw;
 }
 
 .room-link {
-  color: white;
-  margin-top: 10%;
-  min-width: 75%;
-  text-align: center;
-  border: var(--vue-green) solid 3px;
-  font-size: 18pt;
-  text-decoration: none;
+    color: white;
+    margin-top: 10%;
+    min-width: 75%;
+    text-align: center;
+    border: var(--vue-green) solid 3px;
+    font-size: 18pt;
+    text-decoration: none;
 }
 
 .room-link:hover {
-  color: var(--foreground);
-  background-color: var(--vue-green);
+    color: var(--foreground);
+    background-color: var(--vue-green);
 }
 </style>

@@ -1,17 +1,17 @@
 <template>
-  <div>
-    <form autocomplete="off" class="bar" @submit.prevent="sendMessage">
-      <textarea
-        id="content"
-        v-model="content"
-        placeholder="Type a message..."
-        @keydown.enter.exact.prevent="sendMessage"
-        @keydown.enter.shift.exact="lineBreak"
-      >
-      </textarea>
-      <button type="submit" class="button-gray submit">Send</button>
-    </form>
-  </div>
+    <div>
+        <form autocomplete="off" class="bar" @submit.prevent="sendMessage">
+            <textarea
+                id="content"
+                v-model="content"
+                placeholder="Type a message..."
+                @keydown.enter.exact.prevent="sendMessage"
+                @keydown.enter.shift.exact="lineBreak"
+            >
+            </textarea>
+            <button type="submit" class="button-gray submit">Send</button>
+        </form>
+    </div>
 </template>
 
 <script setup>
@@ -24,65 +24,65 @@ const userStore = useUserStore();
 const content = ref("");
 
 const lineBreak = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (!content.value) {
-    content.value = "";
-  }
+    if (!content.value) {
+        content.value = "";
+    }
 
-  content.value += "\n";
+    content.value += "\n";
 };
 
 const sendMessage = async () => {
-  if (!content.value) return;
-  try {
-    await axios.post(
-      `${REST_URL}/messages`,
-      {
-        content: content.value,
-        room_id: userStore.currentRoom.room_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      },
-    );
+    if (!content.value) return;
+    try {
+        await axios.post(
+            `${REST_URL}/messages`,
+            {
+                content: content.value,
+                room_id: userStore.currentRoom.room_id,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
 
-    content.value = null;
-  } catch (error) {
-    console.error("Error sending message: ", error);
-  }
+        content.value = null;
+    } catch (error) {
+        console.error("Error sending message: ", error);
+    }
 };
 </script>
 
 <style scoped>
 .bar {
-  display: flex;
-  flex-direction: row;
-  height: 3em;
+    display: flex;
+    flex-direction: row;
+    height: 3em;
 }
 
 textarea {
-  font-family: inherit;
-  font-size: 1.25rem;
-  flex-grow: 1;
-  padding: 10px;
-  color: white;
-  background-color: var(--foreground);
-  border: none;
-  resize: none;
+    font-family: inherit;
+    font-size: 1.25rem;
+    flex-grow: 1;
+    padding: 10px;
+    color: white;
+    background-color: var(--foreground);
+    border: none;
+    resize: none;
 }
 
 textarea:focus {
-  outline: none;
+    outline: none;
 }
 
 .submit {
-  font-size: 14pt;
-  min-width: 90px;
-  border-top: none;
-  border-bottom: none;
-  border-right: none;
+    font-size: 14pt;
+    min-width: 90px;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
 }
 </style>

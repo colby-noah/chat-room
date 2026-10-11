@@ -1,8 +1,8 @@
 <template>
-  <div class="parent">
-    <h1 class="welcome">Welcome</h1>
-    <LoginForm />
-  </div>
+    <div class="parent">
+        <h1 class="welcome">Welcome</h1>
+        <LoginForm />
+    </div>
 </template>
 
 <script setup>
@@ -15,28 +15,28 @@ import { login, verifyToken } from "@/auth";
 const router = useRouter();
 
 onMounted(async () => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    await verifyToken();
-  }
+    if (token) {
+        await verifyToken();
+    }
 
-  if (isAuthenticated.value) {
-    login(token, router);
-  }
+    if (isAuthenticated.value) {
+        login(token, router);
+    }
 });
 </script>
 
 <style scoped>
 .parent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .welcome {
-  font-size: 40pt;
-  margin-top: 15px;
-  margin-bottom: 40px;
+    font-size: 40pt;
+    margin-top: 15px;
+    margin-bottom: 40px;
 }
 </style>

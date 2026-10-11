@@ -1,7 +1,7 @@
 <template>
-  <div class="parent-container">
-    <RouterView />
-  </div>
+    <div class="parent-container">
+        <RouterView />
+    </div>
 </template>
 
 <script setup>
@@ -10,7 +10,7 @@ import { RouterView } from "vue-router";
 
 <style scoped>
 .parent-container {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 </style>
