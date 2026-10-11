@@ -9,9 +9,9 @@ VCPKG_LIB=$(VCPKG_DIR)/lib
 
 # Include directories (isystem is the same as I, just without compiler warnings)
 INCLUDE=-I./include \
-	-I./database \
-	-I./api \
-	-isystem$(VCPKG_INCLUDE)
+		-I./database \
+		-I./api \
+		-isystem$(VCPKG_INCLUDE)
 
 # ScyllaDB linking
 SCYLLA_LIB=./include/cpp-driver/build/libscylla-cpp-driver.so -Wl,-rpath,./include/cpp-driver/build/
