@@ -1,22 +1,23 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
     state: () => ({
         username: null,
-        created_at: null,
-        room_ids: [],
-        current_room: null,
+        createdAt: null,
+        roomIds: [],
+        currentRoom: null,
     }),
     actions: {
         setUser(data) {
-            this.username = data.username
-            this.created_at = data.created_at
-            this.room_ids = data.room_ids
+            this.username = data.username;
+            // From DB keep snake_case
+            this.createdAt = data.created_at;
+            this.roomIds = data.room_ids;
         },
         clearUser() {
-            this.$reset()
-            localStorage.removeItem('user')
+            this.$reset();
+            localStorage.removeItem("user");
         },
     },
     persist: true,
-})
+});

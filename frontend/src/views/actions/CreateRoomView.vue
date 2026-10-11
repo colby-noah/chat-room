@@ -1,81 +1,89 @@
 <template>
     <div class="flex-col-centered">
-        <button @click="router.push('/home')" class="button-gray back">Back</button>
+        <button class="button-gray back" @click="router.push('/home')">
+            Back
+        </button>
         <div class="action-container">
-            <h1 style="color: var(--vue-green);">Create a Room</h1>
-            <form @submit.prevent="handleSubmit" autocomplete="off">
-                <label for="room_name">Room name</label>
-                <input type="text" id="room_name" v-model="room_name"
-                                                  placeholder="Enter the room name" />
+            <h1 style="color: var(--vue-green)">Create a Room</h1>
+            <form autocomplete="off" @submit.prevent="handleSubmit">
+                <label for="roomName">Room name</label>
+                <input
+                    id="roomName"
+                    v-model="roomName"
+                    type="text"
+                    placeholder="Enter the room name"
+                />
 
                 <button type="submit" class="button-gray submit">Submit</button>
             </form>
-            <p v-if="result.message" :class="{'error': result.is_error, 
-                     'success': !result.is_error}">{{ result.message }}</p>
+            <p
+                v-if="result.message"
+                :class="{ error: result.isError, success: !result.isError }"
+            >
+                {{ result.message }}
+            </p>
         </div>
     </div>
 </template>
 
-
 <script setup>
-    import { ref } from 'vue'
-    import axios from 'axios'
-    import { useRouter } from 'vue-router'
-    import { REST_URL } from '@/config'
+import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { REST_URL } from "@/config";
 
-    const router = useRouter()
-    
-    const room_name = ref('')
-    const result = ref({
-        message: '',
-        is_error: false,
-    })
+const router = useRouter();
 
-    const created_room = ref(false)
+const roomName = ref("");
+const result = ref({
+    message: "",
+    isError: false,
+});
 
-    const handleSubmit = async () => {
-        if (created_room.value) {
-            return;
+const createdRoom = ref(false);
+
+const handleSubmit = async () => {
+    if (createdRoom.value) {
+        return;
+    }
+
+    result.value = { message: "", isError: false };
+
+    try {
+        const response = await axios.post(
+            `${REST_URL}/rooms`,
+            { name: roomName.value },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
+
+        if (response.status == 200 || response.status == 204) {
+            createdRoom.value = true;
+            result.value = {
+                message: "Room successfully created",
+                isError: false,
+            };
         }
-
-        result.value = { message: '', is_error: false }
-
-        try {
-            const response = await axios.post(`${REST_URL}/rooms`, 
-                { name: room_name.value },
-                {
-                    headers: { 
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                }
-            )
-
-            if (response.status == 200 || response.status == 204) {
-                created_room.value = true
-                result.value = {
-                    message: 'Room successfully created', 
-                    is_error: false,
-                }
-            }
-        }
-        catch (error) {
-            if (error.response) {
-                result.value = {
-                    message: error.response.data.error || 'An unexpected error occurred',
-                    is_error: true,
-                }
-            }
-            else {
-                result.value = {
-                    message: 'Failed to connect to the server',
-                    is_error: true,
-                }
-            }
+    } catch (error) {
+        if (error.response) {
+            result.value = {
+                message:
+                    error.response.data.error || "An unexpected error occurred",
+                isError: true,
+            };
+        } else {
+            result.value = {
+                message: "Failed to connect to the server",
+                isError: true,
+            };
         }
     }
+};
 </script>
 
-
 <style scoped>
-@import '@/assets/actions.css';
+@import "@/assets/actions.css";
 </style>

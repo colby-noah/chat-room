@@ -1,4 +1,4 @@
-@import './base.css';
+@import "./base.css";
 
 #app {
     margin: 0 auto;
@@ -61,5 +61,3 @@ ul::-webkit-scrollbar-thumb {
 ul::-webkit-scrollbar-track {
     background: var(--foreground);
 }
-
-

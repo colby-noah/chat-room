@@ -1,14 +1,12 @@
 <template>
-    <div class='parent-container'> 
+    <div class="parent-container">
         <RouterView />
     </div>
 </template>
 
-
 <script setup>
-    import { RouterView } from 'vue-router'
+import { RouterView } from "vue-router";
 </script>
-
 
 <style scoped>
 .parent-container {

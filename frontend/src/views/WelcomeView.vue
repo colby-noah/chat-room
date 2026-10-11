@@ -1,33 +1,31 @@
 <template>
     <div class="parent">
-        <h1 class='welcome'>Welcome</h1>
-        <Login />
+        <h1 class="welcome">Welcome</h1>
+        <LoginForm />
     </div>
 </template>
 
-
 <script setup>
-    import { onMounted } from 'vue'
-    import { isAuthenticated } from '@/auth'
-    import { useRouter } from 'vue-router'
-    import Login from '../components/Login.vue'
-    import { login, verifyToken } from '@/auth'
+import { onMounted } from "vue";
+import { isAuthenticated } from "@/auth";
+import { useRouter } from "vue-router";
+import LoginForm from "../components/LoginForm.vue";
+import { login, verifyToken } from "@/auth";
 
-    const router = useRouter()
+const router = useRouter();
 
-    onMounted( async () => {
-        const token = localStorage.getItem('token')
-            
-        if (token) {
-            await verifyToken()
-        }
+onMounted(async () => {
+    const token = localStorage.getItem("token");
 
-        if (isAuthenticated.value) {
-            login(token, router)
-        }
-    })
+    if (token) {
+        await verifyToken();
+    }
+
+    if (isAuthenticated.value) {
+        login(token, router);
+    }
+});
 </script>
-
 
 <style scoped>
 .parent {
@@ -41,5 +39,4 @@
     margin-top: 15px;
     margin-bottom: 40px;
 }
-
 </style>

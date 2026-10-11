@@ -1,66 +1,74 @@
 <template>
     <div class="wrapper">
-        <nav style="display: flex; flex-direction: row-reverse;">
-            <button @click="router.push('/home')" class="back button-gray">Back</button>
+        <nav style="display: flex; flex-direction: row-reverse">
+            <button class="back button-gray" @click="router.push('/home')">
+                Back
+            </button>
         </nav>
         <div class="options-parent">
             <div class="info">
                 <p>{{ room.name }}</p>
                 <p>Room ID: {{ room.room_id }}</p>
             </div>
-            <p style="color: white; font-size: 16pt; padding: 20px;">Privilege level: 
-            <span style="color: var(--vue-green);">{{ privilege }}</span></p>
+            <p style="color: white; font-size: 16pt; padding: 20px">
+                Privilege level:
+                <span style="color: var(--vue-green)">{{ privilege }}</span>
+            </p>
             <div class="options-container">
-                <UserActions v-if="privilege === 'Owner' 
-                    || privilege === 'Admin' || privilege === 'User'" />
-                <AdminActions v-if="privilege === 'Owner' || privilege === 'Admin'" />
+                <UserActions
+                    v-if="
+                        privilege === 'Owner' ||
+                        privilege === 'Admin' ||
+                        privilege === 'User'
+                    "
+                />
+                <AdminActions
+                    v-if="privilege === 'Owner' || privilege === 'Admin'"
+                />
                 <OwnerActions v-if="privilege === 'Owner'" />
             </div>
         </div>
     </div>
 </template>
 
-
 <script setup>
-    import { ref, onMounted } from 'vue'
-    import axios from 'axios'
-    import { useRouter } from 'vue-router'
-    import { isAuthenticated, fetchUserData } from '@/auth'
-    import { useUserStore } from '@/store/user'
-    import { REST_URL } from '@/config'
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
+import { REST_URL } from "@/config";
 
-    import OwnerActions from '@/components/OwnerActions.vue'
-    import AdminActions from '@/components/AdminActions.vue'
-    import UserActions from '@/components/UserActions.vue'
+import OwnerActions from "@/components/OwnerActions.vue";
+import AdminActions from "@/components/AdminActions.vue";
+import UserActions from "@/components/UserActions.vue";
 
-    const router = useRouter()
-    const userStore = useUserStore()
+const router = useRouter();
+const userStore = useUserStore();
 
-    const room = userStore.current_room
+const room = userStore.currentRoom;
 
-    const privilege = ref('')
+const privilege = ref("");
 
-    onMounted( async () => {
-        //Get privilege level
-        try {
-            const response = 
-            await axios.get(`${REST_URL}/rooms/privilege/${userStore.current_room.room_id}`, {
+onMounted(async () => {
+    //Get privilege level
+    try {
+        const response = await axios.get(
+            `${REST_URL}/rooms/privilege/${userStore.currentRoom.room_id}`,
+            {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            })
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
 
-            if (response.status == 200 && response.data && response.data.level) {
-                privilege.value = response.data.level
-            }
+        if (response.status == 200 && response.data && response.data.level) {
+            privilege.value = response.data.level;
         }
-        catch (error) {
-            console.error('Failed to get privilege level: ', error)
-        }
-    })
-
+    } catch (error) {
+        console.error("Failed to get privilege level: ", error);
+    }
+});
 </script>
-
 
 <style scoped>
 .wrapper {
@@ -94,6 +102,4 @@
     justify-content: space-evenly;
     margin-bottom: 20px;
 }
-
-
 </style>
