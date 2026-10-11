@@ -1,73 +1,73 @@
-import { ref, watchEffect } from 'vue'
-import axios from 'axios'
-import { useUserStore } from '@/store/user'
-import { REST_URL } from '@/config'
-
+import { ref, watchEffect } from "vue";
+import axios from "axios";
+import { useUserStore } from "@/store/user";
+import { REST_URL } from "@/config";
 
 export async function fetchUserData() {
-    try {
-        const response = await axios.get(`${REST_URL}/users/metadata`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        }) 
+  try {
+    const response = await axios.get(`${REST_URL}/users/metadata`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-        const userStore = useUserStore()
-        userStore.setUser(response.data)
-    }
-    catch (error) {
-        console.error("Failed to fetch user meta data: ", error)
-    }
+    const userStore = useUserStore();
+    userStore.setUser(response.data);
+  } catch (error) {
+    console.error("Failed to fetch user meta data: ", error);
+  }
 }
 
-export const isAuthenticated = ref(false)
+export const isAuthenticated = ref(false);
 
 export const verifyToken = async () => {
-    const token = localStorage.getItem('token')
+  const token = localStorage.getItem("token");
 
-    if (token) {
-        try {
-            const response = await axios.post(`${REST_URL}/verify-token`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+  if (token) {
+    try {
+      const response = await axios.post(
+        `${REST_URL}/verify-token`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-            if (response.status == 204) {
-                isAuthenticated.value = true
-            }
-        }
-        catch (error) {
-            isAuthenticated.value = false
-            localStorage.removeItem('token')
-        }
+      if (response.status == 204) {
+        isAuthenticated.value = true;
+      }
+    } catch (error) {
+      isAuthenticated.value = false;
+      localStorage.removeItem("token");
     }
-    else {
-        isAuthenticated.value = false
-    }
-}
+  } else {
+    isAuthenticated.value = false;
+  }
+};
 
 export async function login(token, router) {
-    localStorage.setItem('token', token)
+  localStorage.setItem("token", token);
 
-    // Clear any stores from previous sessions
-    const userStore = useUserStore()
-    userStore.clearUser()
+  // Clear any stores from previous sessions
+  const userStore = useUserStore();
+  userStore.clearUser();
 
-    isAuthenticated.value = true
-    await fetchUserData()
+  isAuthenticated.value = true;
+  await fetchUserData();
 
-    router.push('/home')
+  router.push("/home");
 }
 
 export function logout(router) {
-    localStorage.removeItem('token')
+  localStorage.removeItem("token");
 
-    // Clear all stores
-    const userStore = useUserStore()
-    userStore.clearUser()
-    
-    isAuthenticated.value = false
+  // Clear all stores
+  const userStore = useUserStore();
+  userStore.clearUser();
 
-    router.push('/')
+  isAuthenticated.value = false;
+
+  router.push("/");
 }
