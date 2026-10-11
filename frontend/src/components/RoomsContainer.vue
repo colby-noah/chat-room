@@ -2,11 +2,11 @@
   <div class="rooms">
     <div class="header">
       <h1 style="color: white">Your rooms</h1>
-      <button class="add-room-button" @click="show_add_room = !show_add_room">
-        {{ show_add_room ? "X" : "+" }}
+      <button class="add-room-button" @click="showAddRoom = !showAddRoom">
+        {{ showAddRoom ? "X" : "+" }}
       </button>
     </div>
-    <div v-if="show_add_room" class="popup-parent">
+    <div v-if="showAddRoom" class="popup-parent">
       <router-link to="/create-room" class="room-link"
         >Create a Room</router-link
       >
@@ -18,8 +18,8 @@
         :key="room.room_id"
         :class="{
           selected:
-            userStore.current_room &&
-            room.room_id === userStore.current_room.room_id,
+            userStore.currentRoom &&
+            room.room_id === userStore.currentRoom.room_id,
         }"
         @click="selectRoom(room)"
       >
@@ -31,21 +31,20 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { RouterLink, RouterView, useRouter } from "vue-router";
+import { RouterLink } from "vue-router";
 import { fetchUserData } from "@/auth";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
 import { REST_URL } from "@/config";
 
-const router = useRouter();
 const userStore = useUserStore();
 
 const rooms = ref([]);
-const show_add_room = ref(false);
+const showAddRoom = ref(false);
 
-const getRoom = async (room_id) => {
+const getRoom = async (roomId) => {
   try {
-    const response = await axios.get(`${REST_URL}/rooms/${room_id}`, {
+    const response = await axios.get(`${REST_URL}/rooms/${roomId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -53,7 +52,7 @@ const getRoom = async (room_id) => {
 
     if (response.status == 200 && response.data) {
       const room = response.data;
-      room.room_id = room_id; // Query does not include room_id
+      room.room_id = roomId; // Query does not include room_id
       rooms.value.push(room);
 
       rooms.value.sort((a, b) => {
@@ -68,7 +67,7 @@ const getRoom = async (room_id) => {
 };
 
 const selectRoom = (room) => {
-  userStore.current_room = room;
+  userStore.currentRoom = room;
 };
 
 onMounted(async () => {
@@ -76,8 +75,8 @@ onMounted(async () => {
 
   await fetchUserData();
 
-  userStore.room_ids.forEach((room_id) => {
-    getRoom(room_id);
+  userStore.roomIds.forEach((roomId) => {
+    getRoom(roomId);
   });
 });
 </script>

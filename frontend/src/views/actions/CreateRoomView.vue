@@ -4,10 +4,10 @@
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Create a Room</h1>
       <form autocomplete="off" @submit.prevent="handleSubmit">
-        <label for="room_name">Room name</label>
+        <label for="roomName">Room name</label>
         <input
-          id="room_name"
-          v-model="room_name"
+          id="roomName"
+          v-model="roomName"
           type="text"
           placeholder="Enter the room name"
         />
@@ -16,7 +16,7 @@
       </form>
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -32,25 +32,25 @@ import { REST_URL } from "@/config";
 
 const router = useRouter();
 
-const room_name = ref("");
+const roomName = ref("");
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
-const created_room = ref(false);
+const createdRoom = ref(false);
 
 const handleSubmit = async () => {
-  if (created_room.value) {
+  if (createdRoom.value) {
     return;
   }
 
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
   try {
     const response = await axios.post(
       `${REST_URL}/rooms`,
-      { name: room_name.value },
+      { name: roomName.value },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -59,22 +59,22 @@ const handleSubmit = async () => {
     );
 
     if (response.status == 200 || response.status == 204) {
-      created_room.value = true;
+      createdRoom.value = true;
       result.value = {
         message: "Room successfully created",
-        is_error: false,
+        isError: false,
       };
     }
   } catch (error) {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }

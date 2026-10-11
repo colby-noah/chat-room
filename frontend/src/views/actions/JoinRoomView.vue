@@ -4,10 +4,10 @@
     <div class="action-container">
       <h1 style="color: var(--vue-green)">Join a Room</h1>
       <form autocomplete="off" @submit.prevent="handleSubmit">
-        <label for="room_name">Room ID</label>
+        <label for="roomName">Room ID</label>
         <input
-          id="room_id"
-          v-model="room_id"
+          id="roomId"
+          v-model="roomId"
           type="text"
           placeholder="Enter the room ID"
         />
@@ -16,7 +16,7 @@
       </form>
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -32,19 +32,19 @@ import { REST_URL } from "@/config";
 
 const router = useRouter();
 
-const room_id = ref("");
+const roomId = ref("");
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
 const handleSubmit = async () => {
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
   try {
     const response = await axios.patch(
       `${REST_URL}/rooms/add-user`,
-      { room_id: room_id.value },
+      { room_id: roomId.value },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,19 +55,19 @@ const handleSubmit = async () => {
     if (response.status == 200 || response.status == 204) {
       result.value = {
         message: "Successfully joined room",
-        is_error: false,
+        isError: false,
       };
     }
   } catch (error) {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }

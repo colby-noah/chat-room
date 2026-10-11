@@ -11,22 +11,22 @@
             v-for="(user, index) in users"
             :key="index"
             class="user-list-li"
-            :class="{ selected: user === selected_user }"
-            @click="selected_user = user"
+            :class="{ selected: user === selectedUser }"
+            @click="selectedUser = user"
           >
             {{ user.username }}
           </li>
         </ul>
       </div>
-      <div v-if="selected_user">
+      <div v-if="selectedUser">
         <p style="color: white; font-size: 14pt; padding: 10px">
-          Promote: {{ selected_user.username }}
+          Promote: {{ selectedUser.username }}
         </p>
       </div>
       <button class="button-gray submit" @click="promoteUser()">Submit</button>
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -46,24 +46,24 @@ const userStore = useUserStore();
 
 const users = ref([]);
 
-const selected_user = ref(null);
+const selectedUser = ref(null);
 
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
 const promoteUser = async () => {
-  if (!selected_user.value) return;
+  if (!selectedUser.value) return;
 
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
   try {
     const response = await axios.patch(
       `${REST_URL}/rooms/promote-user`,
       {
-        room_id: userStore.current_room.room_id,
-        user_id: selected_user.value.user_id,
+        room_id: userStore.currentRoom.room_id,
+        user_id: selectedUser.value.user_id,
       },
       {
         headers: {
@@ -75,19 +75,19 @@ const promoteUser = async () => {
     if (response.status == 200 || response.status == 204) {
       result.value = {
         message: "Successfully promoted user",
-        is_error: false,
+        isError: false,
       };
     }
   } catch (error) {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }
@@ -96,14 +96,14 @@ const promoteUser = async () => {
 onMounted(async () => {
   try {
     const response = await axios.get(
-      `${REST_URL}/rooms/users/${userStore.current_room.room_id}`,
+      `${REST_URL}/rooms/users/${userStore.currentRoom.room_id}`,
     );
 
     if (response.status == 200 && response.data.users_info) {
       users.value = response.data.users_info;
     }
-  } catch (error) {
-    result.value = { message: "Failed to fetch users", is_error: true };
+  } catch {
+    result.value = { message: "Failed to fetch users", isError: true };
   }
 });
 </script>

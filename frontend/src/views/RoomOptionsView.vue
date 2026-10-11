@@ -33,7 +33,6 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import { isAuthenticated, fetchUserData } from "@/auth";
 import { useUserStore } from "@/store/user";
 import { REST_URL } from "@/config";
 
@@ -44,7 +43,7 @@ import UserActions from "@/components/UserActions.vue";
 const router = useRouter();
 const userStore = useUserStore();
 
-const room = userStore.current_room;
+const room = userStore.currentRoom;
 
 const privilege = ref("");
 
@@ -52,7 +51,7 @@ onMounted(async () => {
   //Get privilege level
   try {
     const response = await axios.get(
-      `${REST_URL}/rooms/privilege/${userStore.current_room.room_id}`,
+      `${REST_URL}/rooms/privilege/${userStore.currentRoom.room_id}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

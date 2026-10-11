@@ -4,12 +4,12 @@ import { WEBSOCKET_URL } from "@/config";
 class WebSocketService {
   constructor() {
     this.socket = null;
-    this.is_connected = false;
+    this.isConnected = false;
     this.messages = ref([]);
   }
 
-  connect(room_id) {
-    if (this.socket && this.is_connected) {
+  connect(roomId) {
+    if (this.socket && this.isConnected) {
       this.closeConnection();
     }
 
@@ -19,12 +19,12 @@ class WebSocketService {
       //console.log('Connected to websocket server')
       try {
         const body = {
-          room_id: room_id,
+          room_id: roomId,
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         };
 
         this.socket.send(JSON.stringify(body));
-        this.is_connected = true;
+        this.isConnected = true;
       } catch (error) {
         console.error("Error opening websocket connection: ", error);
       }
@@ -37,7 +37,7 @@ class WebSocketService {
 
     this.socket.onclose = () => {
       //console.log('Websocket connection closed')
-      this.is_connected = false;
+      this.isConnected = false;
     };
 
     this.socket.onerror = (error) => {
@@ -46,10 +46,10 @@ class WebSocketService {
   }
 
   closeConnection() {
-    if (this.socket instanceof WebSocket && this.is_connected) {
+    if (this.socket instanceof WebSocket && this.isConnected) {
       this.socket.close();
       this.socket = null;
-      this.is_connected = false;
+      this.isConnected = false;
     }
   }
 }

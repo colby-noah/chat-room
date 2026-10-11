@@ -7,7 +7,7 @@
           <label for="username">Username</label>
           <input
             id="username"
-            v-model="form_data.username"
+            v-model="formData.username"
             type="text"
             placeholder="Enter your username"
           />
@@ -15,22 +15,22 @@
           <label for="password">Password</label>
           <input
             id="password"
-            v-model="form_data.password"
+            v-model="formData.password"
             type="password"
             placeholder="Enter your password"
             @input="checkRequirements"
-            @focus="show_password_requirements = !isLogin"
+            @focus="showPasswordRequirements = !isLogin"
             @blur="hideChecker"
           />
 
           <div
-            v-if="show_password_requirements && !isLogin"
+            v-if="showPasswordRequirements && !isLogin"
             class="password-requirements"
           >
             <p>Password must contain:</p>
             <ul>
               <li
-                v-for="(item, index) in password_requirements"
+                v-for="(item, index) in passwordRequirements"
                 :key="index"
                 :class="{ error: !item.isValid, success: item.isValid }"
               >
@@ -47,7 +47,7 @@
 
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -73,19 +73,19 @@ import { REST_URL } from "@/config";
 const router = useRouter();
 
 const isLogin = ref(true);
-const show_password_requirements = ref(false);
+const showPasswordRequirements = ref(false);
 
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
-const form_data = ref({
+const formData = ref({
   username: "",
   password: "",
 });
 
-const password_requirements = ref([
+const passwordRequirements = ref([
   { text: "At least 8 characters", isValid: false },
   { text: "At least one uppercase character", isValid: false },
   { text: "At least one lowercase character", isValid: false },
@@ -95,60 +95,60 @@ const password_requirements = ref([
 
 // Function to validate password while typing
 const checkRequirements = () => {
-  const password = form_data.value.password;
+  const password = formData.value.password;
 
-  password_requirements.value[0].isValid = password.length >= 8;
-  password_requirements.value[1].isValid = /[A-Z]/.test(password);
-  password_requirements.value[2].isValid = /[a-z]/.test(password);
-  password_requirements.value[3].isValid = /\d/.test(password);
-  password_requirements.value[4].isValid =
-    /[`~!@#$%^&*()_\-+=\/\\|,?<>;:'"\.]/.test(password);
+  passwordRequirements.value[0].isValid = password.length >= 8;
+  passwordRequirements.value[1].isValid = /[A-Z]/.test(password);
+  passwordRequirements.value[2].isValid = /[a-z]/.test(password);
+  passwordRequirements.value[3].isValid = /\d/.test(password);
+  passwordRequirements.value[4].isValid =
+    /[`~!@#$%^&*()_\-+=/\\|,?<>;:'".]/.test(password);
 
-  show_password_requirements.value = true;
+  showPasswordRequirements.value = true;
 };
 
 const hideChecker = () => {
-  if (!form_data.value.password) {
-    show_password_requirements.value = false;
+  if (!formData.value.password) {
+    showPasswordRequirements.value = false;
   }
 };
 
 const toggleForm = () => {
   isLogin.value = !isLogin.value;
-  form_data.value.password = "";
+  formData.value.password = "";
   checkRequirements();
-  show_password_requirements.value = false;
-  result.value = { message: "", is_error: false };
+  showPasswordRequirements.value = false;
+  result.value = { message: "", isError: false };
 };
 
 const validatePassword = (password) => {
-  const password_regex =
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()_\-+=\/\\|,?<>;:'"\.]).{8,}$/;
-  return password_regex.test(password);
+  const passwordRegex =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[`~!@#$%^&*()_\-+=/\\|,?<>;:'".]).{8,}$/;
+  return passwordRegex.test(password);
 };
 
 const handleSubmit = async () => {
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
-  if (!isLogin.value && !validatePassword(form_data.value.password)) {
+  if (!isLogin.value && !validatePassword(formData.value.password)) {
     result.value = {
       message: "Password does not meet requirements",
-      is_error: true,
+      isError: true,
     };
     return;
   }
 
   try {
     const response = isLogin.value
-      ? await axios.post(`${REST_URL}/login`, form_data.value)
-      : await axios.post(`${REST_URL}/users`, form_data.value);
+      ? await axios.post(`${REST_URL}/login`, formData.value)
+      : await axios.post(`${REST_URL}/users`, formData.value);
 
     if (response.status == 200 || response.status == 204) {
       result.value = {
         message: isLogin.value
           ? "Login successful"
           : "Sign up successful, please login",
-        is_error: false,
+        isError: false,
       };
 
       if (isLogin.value) {
@@ -159,7 +159,7 @@ const handleSubmit = async () => {
         } else {
           result.value = {
             message: "Token missing in response",
-            is_error: true,
+            isError: true,
           };
         }
       }
@@ -168,12 +168,12 @@ const handleSubmit = async () => {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }

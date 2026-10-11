@@ -11,22 +11,22 @@
             v-for="(admin, index) in admins"
             :key="index"
             class="user-list-li"
-            :class="{ selected: admin === selected_admin }"
-            @click="selected_admin = admin"
+            :class="{ selected: admin === selectedAdmin }"
+            @click="selectedAdmin = admin"
           >
             {{ admin.username }}
           </li>
         </ul>
       </div>
-      <div v-if="selected_admin">
+      <div v-if="selectedAdmin">
         <p style="color: white; font-size: 1.5rem; padding: 10px">
-          Demote: {{ selected_admin.username }}
+          Demote: {{ selectedAdmin.username }}
         </p>
       </div>
       <button class="button-gray submit" @click="demoteAdmin()">Submit</button>
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -46,24 +46,24 @@ const userStore = useUserStore();
 
 const admins = ref([]);
 
-const selected_admin = ref(null);
+const selectedAdmin = ref(null);
 
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
 const demoteAdmin = async () => {
-  if (!selected_admin.value) return;
+  if (!selectedAdmin.value) return;
 
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
   try {
     const response = await axios.patch(
       `${REST_URL}/rooms/demote-admin`,
       {
-        room_id: userStore.current_room.room_id,
-        user_id: selected_admin.value.user_id,
+        room_id: userStore.currentRoom.room_id,
+        user_id: selectedAdmin.value.user_id,
       },
       {
         headers: {
@@ -75,7 +75,7 @@ const demoteAdmin = async () => {
     if (response.status == 200 || response.status == 204) {
       result.value = {
         message: "Successfully demoted admin",
-        is_error: false,
+        isError: false,
       };
       getAdmins();
     }
@@ -83,12 +83,12 @@ const demoteAdmin = async () => {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }
@@ -97,14 +97,14 @@ const demoteAdmin = async () => {
 const getAdmins = async () => {
   try {
     const response = await axios.get(
-      `${REST_URL}/rooms/admins/${userStore.current_room.room_id}`,
+      `${REST_URL}/rooms/admins/${userStore.currentRoom.room_id}`,
     );
 
     if (response.status == 200 && response.data.admins_info) {
       admins.value = response.data.admins_info;
     }
-  } catch (error) {
-    result.value = { message: "Failed to fetch admins", is_error: true };
+  } catch {
+    result.value = { message: "Failed to fetch admins", isError: true };
   }
 };
 

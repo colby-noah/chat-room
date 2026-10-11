@@ -9,7 +9,7 @@
         Logout
       </button>
       <button
-        v-if="userStore.current_room"
+        v-if="userStore.currentRoom"
         class="button-gray room-options"
         @click="router.push('room-options')"
       >
@@ -17,18 +17,18 @@
       </button>
     </nav>
     <div class="home">
-      <Rooms class="left" />
-      <Messages class="right" />
+      <RoomsContainer class="left" />
+      <MessagesContainer class="right" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { RouterLink, RouterView, useRouter } from "vue-router";
-import { isAuthenticated, logout, fetchUserData } from "@/auth";
+import { useRouter } from "vue-router";
+import { isAuthenticated, logout } from "@/auth";
 import { useUserStore } from "@/store/user";
-import Rooms from "../components/Rooms.vue";
-import Messages from "../components/Messages.vue";
+import MessagesContainer from "@/components/MessagesContainer.vue";
+import RoomsContainer from "@/components/RoomsContainer.vue";
 
 const router = useRouter();
 const userStore = useUserStore();

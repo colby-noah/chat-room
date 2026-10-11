@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="messages-container" @scroll="handleScroll">
-      <p v-if="!userStore.current_room" class="placeholder">Choose a room</p>
+      <p v-if="!userStore.currentRoom" class="placeholder">Choose a room</p>
       <p v-else-if="!messages.length && !loading.value" class="placeholder">
         There are no messages, be the first!
       </p>
@@ -40,19 +40,17 @@ const websocket = new WebSocketService();
 const messages = ref([]);
 
 const loading = ref(false);
-const has_more_messages = ref(true);
+const hasMoreMessages = ref(true);
 
-const socket = ref(null);
+const formatDate = (utcDate) => {
+  if (!utcDate) return "";
 
-const formatDate = (utc_date) => {
-  if (!utc_date) return "";
-
-  const timestamp = new Date(utc_date);
+  const timestamp = new Date(utcDate);
 
   const today = new Date();
-  const is_today = timestamp.toDateString() === today.toDateString();
+  const isToday = timestamp.toDateString() === today.toDateString();
 
-  const local_date = is_today
+  const localDate = isToday
     ? ""
     : timestamp.toLocaleDateString(undefined, {
         year: "numeric",
@@ -60,18 +58,18 @@ const formatDate = (utc_date) => {
         day: "2-digit",
       });
 
-  const local_time = timestamp.toLocaleTimeString(undefined, {
+  const localTime = timestamp.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   });
 
-  return `${local_date} ${local_time}`;
+  return `${localDate} ${localTime}`;
 };
 
 const getOldMessages = async (before = null) => {
   try {
-    if (!userStore.current_room.room_id) {
+    if (!userStore.currentRoom.room_id) {
       return;
     }
 
@@ -80,15 +78,15 @@ const getOldMessages = async (before = null) => {
     const limit = 20;
 
     const url = before
-      ? `${REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}&before=${before}`
-      : `${REST_URL}/messages/${userStore.current_room.room_id}?limit=${limit}`;
+      ? `${REST_URL}/messages/${userStore.currentRoom.room_id}?limit=${limit}&before=${before}`
+      : `${REST_URL}/messages/${userStore.currentRoom.room_id}?limit=${limit}`;
 
     const response = await axios.get(url, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
 
     if (response.data.length < limit) {
-      has_more_messages.value = false;
+      hasMoreMessages.value = false;
     }
 
     // Prepend older messages
@@ -107,33 +105,33 @@ const getOldMessages = async (before = null) => {
 const handleScroll = (event) => {
   const container = event.target;
 
-  const scrollbar_position =
+  const scrollbarPosition =
     Math.abs(container.scrollTop) + container.clientHeight + 50;
-  const scroll_height = container.scrollHeight;
+  const scrollHeight = container.scrollHeight;
 
   if (
-    has_more_messages.value &&
+    hasMoreMessages.value &&
     !loading.value &&
-    scrollbar_position >= scroll_height
+    scrollbarPosition >= scrollHeight
   ) {
-    const oldest_message = messages.value[0];
+    const oldestMessage = messages.value[0];
 
-    if (oldest_message) {
-      getOldMessages(oldest_message.created_at);
+    if (oldestMessage) {
+      getOldMessages(oldestMessage.created_at);
     }
   }
 };
 
 watch(
-  () => userStore.current_room,
-  (new_room, old_room) => {
-    if (new_room && new_room !== old_room) {
+  () => userStore.currentRoom,
+  (newRoom, oldRoom) => {
+    if (newRoom && newRoom !== oldRoom) {
       messages.value = [];
-      has_more_messages.value = true;
+      hasMoreMessages.value = true;
       getOldMessages();
 
       // Connect to the current room
-      websocket.connect(userStore.current_room.room_id);
+      websocket.connect(userStore.currentRoom.room_id);
     }
   },
   { immediate: true },
@@ -142,7 +140,7 @@ watch(
 // Watch for new messages received, add them to messages
 watch(
   () => websocket.messages.value,
-  (new_messages) => {
+  () => {
     while (websocket.messages.value.length > 0) {
       messages.value.push(websocket.messages.value.shift());
     }

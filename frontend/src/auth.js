@@ -1,4 +1,4 @@
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import axios from "axios";
 import { useUserStore } from "@/store/user";
 import { REST_URL } from "@/config";
@@ -38,7 +38,7 @@ export const verifyToken = async () => {
       if (response.status == 204) {
         isAuthenticated.value = true;
       }
-    } catch (error) {
+    } catch {
       isAuthenticated.value = false;
       localStorage.removeItem("token");
     }

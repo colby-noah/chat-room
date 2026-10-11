@@ -10,7 +10,7 @@
       <button class="button-gray submit" @click="deleteRoom()">Delete</button>
       <p
         v-if="result.message"
-        :class="{ error: result.is_error, success: !result.is_error }"
+        :class="{ error: result.isError, success: !result.isError }"
       >
         {{ result.message }}
       </p>
@@ -30,15 +30,15 @@ const userStore = useUserStore();
 
 const result = ref({
   message: "",
-  is_error: false,
+  isError: false,
 });
 
 const deleteRoom = async () => {
-  result.value = { message: "", is_error: false };
+  result.value = { message: "", isError: false };
 
   try {
     const response = await axios.delete(
-      `${REST_URL}/rooms/${userStore.current_room.room_id}`,
+      `${REST_URL}/rooms/${userStore.currentRoom.room_id}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -47,19 +47,19 @@ const deleteRoom = async () => {
     );
 
     if (response.status == 204) {
-      userStore.current_room = null;
+      userStore.currentRoom = null;
       router.push("/home");
     }
   } catch (error) {
     if (error.response) {
       result.value = {
         message: error.response.data.error || "An unexpected error occurred",
-        is_error: true,
+        isError: true,
       };
     } else {
       result.value = {
         message: "Failed to connect to the server",
-        is_error: true,
+        isError: true,
       };
     }
   }

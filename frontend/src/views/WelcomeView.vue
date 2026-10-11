@@ -1,7 +1,7 @@
 <template>
   <div class="parent">
     <h1 class="welcome">Welcome</h1>
-    <Login />
+    <LoginForm />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { onMounted } from "vue";
 import { isAuthenticated } from "@/auth";
 import { useRouter } from "vue-router";
-import Login from "../components/Login.vue";
+import LoginForm from "../components/LoginForm.vue";
 import { login, verifyToken } from "@/auth";
 
 const router = useRouter();

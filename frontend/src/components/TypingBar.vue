@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
 import { REST_URL } from "@/config";
@@ -34,25 +34,24 @@ const lineBreak = (event) => {
 };
 
 const sendMessage = async () => {
-  if (content.value) {
-    try {
-      const response = await axios.post(
-        `${REST_URL}/messages`,
-        {
-          content: content.value,
-          room_id: userStore.current_room.room_id,
+  if (!content.value) return;
+  try {
+    await axios.post(
+      `${REST_URL}/messages`,
+      {
+        content: content.value,
+        room_id: userStore.currentRoom.room_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
+      },
+    );
 
-      content.value = null;
-    } catch (error) {
-      console.error("Error sending message: ", error);
-    }
+    content.value = null;
+  } catch (error) {
+    console.error("Error sending message: ", error);
   }
 };
 </script>
