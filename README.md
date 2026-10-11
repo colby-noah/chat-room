@@ -99,9 +99,9 @@ Secrets, keys, and certificates are gitignored. `backend/env.example.sh` documen
 
 ## Known issues
 
-- Messages are rendered as HTML and not yet sanitized, so this is **not production-safe** as is.
 - ScyllaDB runs as a single node with `SimpleStrategy` for local use. A real deployment would use multiple nodes and `NetworkTopologyStrategy`. Earlier versions of the project used three nodes, but it has been cut down to one for simplicity.
 - The certificate is self-signed, so browsers show a warning.
+- This codebase does not have automated testing
 
 ## Project layout
 
