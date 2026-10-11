@@ -12,7 +12,7 @@
                     <strong class="username">{{ message.username }}</strong>
                     <span style="padding-left: 1rem;">{{ formatDate(message.created_at) }}</span>
                     <br>
-                    <span v-html="formatMessage(message.content)" class="message"></span>
+                    <span class="message">{{ message.content }}</span>
                 </li>
             </ul>
         </div>
@@ -62,10 +62,6 @@
         })
 
         return `${local_date} ${local_time}`
-    }
-
-    const formatMessage = (message) => {
-        return message.replace(/\n/g, '<br>')
     }
 
     const getOldMessages = async (before = null) => {
@@ -201,7 +197,8 @@
 .message {
     font-size: 14pt;
     color: white;
-    word-break: break-word;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
 }
 
 
